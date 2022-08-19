@@ -44,6 +44,7 @@ chrome_options.add_argument('--headless')
 
 def _read_config():
     """Returns and reads from the configuration object"""
+    
     config = None
     if os.path.exists(os.path.join(current_dir, 'config.cfg')):
         config = configparser.ConfigParser()
@@ -58,6 +59,7 @@ class DragonPayScraper(webdriver.Chrome):
         self.quit = quit
         self.driver_path = driver_path
         self.wait_timeout = wait_timeout
+        # Whether to run scraper in headless mode, defaults to True
         if headless:
             super().__init__(executable_path=self.driver_path, options=chrome_options)
         else:
@@ -146,9 +148,9 @@ class DragonPayScraper(webdriver.Chrome):
             for td in tds.find_elements(By.TAG_NAME, 'td'):
                 if not td.text == "View":
                     row.append(td.text)
-            self.data.append(list(row))
-        self.data.remove([])
-        self.data.insert(0, headers) # Append headers
+            self.data.append(list(row)) # Populate the list
+        self.data.remove([]) # Remove list(s) with empty values
+        self.data.insert(0, headers) # Append headers at the beginning of the list
         return self.data
 
     def data_to_csv(self):
